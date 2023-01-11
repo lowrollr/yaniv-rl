@@ -40,6 +40,7 @@ rank_id_values = {
     'K': 12
 }
 
+
 class YanivCard(Card):
     def __init__(self, card: Card) -> None:
         super().__init__(card.suit, card.rank)

@@ -1,17 +1,16 @@
 
 from collections import OrderedDict
+
 from rlcard.envs import Env
 from game.game import YanivGame
-from game.action import Action, PERM_ID_MAP, ID_PERM_MAP, decode_action
+from game.action import decode_action
 
 import numpy as np
-import itertools
 
 
 DEFAULT_GAME_CONFIG = {
     'game_num_players': 4
 }
-
 
 
 class YanivEnv(Env):
@@ -22,7 +21,7 @@ class YanivEnv(Env):
         self.game = YanivGame(num_players=num_players)
         super().__init__(config)
         self.state_shape = [[3, num_players, 54]]
-        self.action_shape = [[4,325]]
+        self.action_shape = [[4, 325]]
 
     def _extract_state(self, state):
         obs = np.zeros((3, self.game.num_players, 54))
@@ -35,7 +34,7 @@ class YanivEnv(Env):
         obs[0][3][5*self.game.num_players+state['my_id']] = 1
 
         obs[1] = state['known_in_hand']
-        obs[2] = state['played_cards'] 
+        obs[2] = state['played_cards']
 
         legal_ids = {}
         for action in state['legal_actions']:

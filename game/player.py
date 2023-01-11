@@ -3,6 +3,7 @@ from itertools import permutations, combinations
 from rlcard.games.base import Card
 from game.card import YanivCard
 
+
 class YanivPlayer:
     def __init__(self, player_id, np_random) -> None:
         self.np_random = np_random
@@ -23,7 +24,7 @@ class YanivPlayer:
             if i not in indices:
                 new_hand.append(card)
         self.hand = new_hand
-    
+
     def add_card(self, card):
         self.hand.append(card)
 
@@ -34,8 +35,6 @@ class YanivPlayer:
         self.hand.sort(key=lambda card: (card.rank_value, card.suit))
 
         # we can play all collections of one or more card of the same card from our hand
-
-        
 
         sames = []
 
@@ -50,7 +49,7 @@ class YanivPlayer:
         # we can augment straights with jokers to fill in one or more missing cards
         # i.e. 10 of Spades -> Joker -> J of Spades is a valid straight, and so is 10 of Spades -> Joker -> Joker -> Q of Spades is also valid
         # so is 10 of Spades -> Joker -> J of Spades -> Joker -> K of Spades
-        
+
         for combo in sames:
             if len(combo) < 2:
                 actions.append(combo)
@@ -59,9 +58,8 @@ class YanivPlayer:
                 # put the rest of the cards in the middle
                 for first in range(0, len(combo) - 1):
                     for last in range(first + 1, len(combo)):
-                        actions.append([combo[first]] + [l for l in combo if l not in {combo[first], combo[last]}] + [combo[last]])
-                    
-
+                        actions.append(
+                            [combo[first]] + [l for l in combo if l not in {combo[first], combo[last]}] + [combo[last]])
 
         jokers = 0
         for card in self.hand:
@@ -119,10 +117,3 @@ class YanivPlayer:
         actions.extend(valid_straights)
 
         return actions
-
-
-
-        
-                        
-        
-        

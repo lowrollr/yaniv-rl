@@ -10,11 +10,8 @@ class YanivGame:
     def __init__(self, num_players=4):
         self.np_random = np.random.RandomState()
 
-
-
         self.num_players = num_players
         self.judger = YanivJudger()
-    
 
     def configure(self, game_config):
         self.num_players = game_config["game_num_players"]
@@ -23,7 +20,8 @@ class YanivGame:
 
         self.dealer = YanivDealer(self.np_random)
 
-        self.players = [YanivPlayer(i, self.np_random) for i in range(self.num_players)]
+        self.players = [YanivPlayer(i, self.np_random)
+                        for i in range(self.num_players)]
 
         for player in self.players:
             self.dealer.deal_cards(player, 5)
@@ -32,19 +30,18 @@ class YanivGame:
 
         self.round.flip_top_card()
 
-
         player_id = self.round.cur_player
 
         state = self.get_state(player_id)
 
         return state, player_id
-    
+
     def step(self, action):
         self.round.proceed_round(self.players, action)
         player_id = self.round.cur_player
         state = self.get_state(player_id)
         return state, player_id
-    
+
     def get_state(self, player_id):
         state = self.round.get_state(self.players, player_id)
         state['num_players'] = self.get_num_players()
@@ -63,7 +60,7 @@ class YanivGame:
 
     def is_over(self):
         return self.round.is_over
-    
+
     def get_num_actions(self):
         return 2 * 3 * 325
 

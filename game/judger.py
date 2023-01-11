@@ -14,12 +14,12 @@ class YanivJudger:
             elif score == lowest_score:
                 winning_players.add(player.player_id)
             scores[player.player_id] = score
-        
+
         if len(winning_players) == 1 and caller_id in winning_players:
             scores[caller_id] = 0
         else:
             for p in winning_players:
                 scores[p] = 0
             scores[caller_id] = 30
-        
+
         return scores

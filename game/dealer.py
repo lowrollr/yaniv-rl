@@ -1,6 +1,7 @@
 from rlcard.games.base import Card
 from .utils import make_yaniv_deck
 
+
 class YanivDealer:
 
     def __init__(self, np_random) -> None:
