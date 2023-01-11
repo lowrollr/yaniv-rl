@@ -4,7 +4,7 @@ class YanivJudger:
     def get_points(players, caller_id):
         scores = [0 for _ in range(len(players))]
 
-        lowest_score = (51)
+        lowest_score = 51
         winning_players = {}
         for player in players:
             score = player.get_hand_score()
