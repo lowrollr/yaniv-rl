@@ -18,8 +18,8 @@ class YanivJudger:
         if len(winning_players) == 1 and caller_id in winning_players:
             scores[caller_id] = 0
         else:
-            for player in winning_players:
-                scores[player.player_id] = 0
+            for p in winning_players:
+                scores[p] = 0
             scores[caller_id] = 30
         
         return scores

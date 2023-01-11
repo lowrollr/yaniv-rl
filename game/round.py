@@ -76,6 +76,8 @@ class YanivRound:
 
         if not self.dealer.deck:
             self.replace_deck()
+        
+        self.cur_player = (self.cur_player + 1) % self.num_players
 
     def get_legal_actions(self, players, player_id):
         legal_actions = []

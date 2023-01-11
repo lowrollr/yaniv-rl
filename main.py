@@ -1,6 +1,6 @@
 import rlcard
 from rlcard.envs.registration import register
-from rlcard.utils import get_device, Logger, reorganize, tournament
+from rlcard.utils import get_device, Logger, reorganize, tournament, plot_curve
 from rlcard.agents import RandomAgent
 
 from rlcard.agents import DQNAgent
@@ -21,14 +21,14 @@ def train(args):
         agents.append(RandomAgent(num_actions=env.num_actions))
     env.set_agents(agents)
     with Logger(log_dir='./') as logger:
-        for episode in range(1000):
+        for episode in range(args.num_episodes):
             trajectories, payoffs = env.run(is_training=True)
             trajectories = reorganize(trajectories, payoffs)
             for ts in trajectories[0]:
                 agent.feed(ts)
             if episode % args.evaluate_every == 0:
                 logger.log_performance(env.timestep, tournament(env, args.num_games)[0])
-        logger.plot(args.algorithm)
+        plot_curve(logger.csv_path, logger.fig_path, 'DQN Performance')
     
     
     save_path = os.path.join(args.log_dir, 'model.pth')
@@ -41,8 +41,8 @@ if __name__ == '__main__':
     parser.add_argument('--algorithm', type=str, default='dqn', choices=['dqn'])
     parser.add_argument('--cuda', type=str, default='')
     parser.add_argument('--seed', type=int, default=42)
-    parser.add_argument('--num_episodes', type=int, default=1000)
-    parser.add_argument('--num_games', type=int, default=500)
+    parser.add_argument('--num_episodes', type=int, default=5000)
+    parser.add_argument('--num_games', type=int, default=2000)
     parser.add_argument('--evaluate_every', type=int, default=100)
     parser.add_argument('--log_dir', type=str, default='./')
     register(
