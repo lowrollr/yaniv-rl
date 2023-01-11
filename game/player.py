@@ -16,6 +16,17 @@ class YanivPlayer:
     def get_hand_score(self):
         return sum([card.rank_value for card in self.hand])
 
+    def remove_cards(self, indices):
+        indices = set(indices)
+        new_hand = []
+        for i, card in enumerate(self.hand):
+            if i not in indices:
+                new_hand.append(card)
+        self.hand = new_hand
+    
+    def add_card(self, card):
+        self.hand.append(card)
+
     def get_play_actions(self):
         # we can play all single cards in hand
         actions = []

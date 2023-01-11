@@ -10,5 +10,6 @@ def cards_to_bin_array(cards: List[YanivCard]):
     
     array = np.zeros(54)
     for card in cards:
-        array[card.id] = 1
+        if card is not None:
+            array[card.id] = 1
     return array

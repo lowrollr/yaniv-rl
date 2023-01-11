@@ -30,9 +30,8 @@ class YanivGame:
 
         self.round = YanivRound(self.dealer, self.num_players, self.np_random)
 
-        top_card = self.round.flip_top_card()
+        self.round.flip_top_card()
 
-        self.round.perform_top_card(self.players, top_card)
 
         player_id = self.round.cur_player
 
@@ -48,8 +47,8 @@ class YanivGame:
     
     def get_state(self, player_id):
         state = self.round.get_state(self.players, player_id)
-        state['num_players'] = state.get_num_players()
-        state['current_player'] = self.round.current_player
+        state['num_players'] = self.get_num_players()
+        state['current_player'] = self.round.cur_player
 
         return state
 
@@ -67,3 +66,6 @@ class YanivGame:
     
     def get_num_actions(self):
         return 2 * 3 * 325
+
+    def get_player_id(self):
+        return self.round.cur_player

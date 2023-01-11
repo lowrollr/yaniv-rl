@@ -10,16 +10,16 @@ class YanivJudger:
             score = player.get_hand_score()
             if score < lowest_score:
                 lowest_score = score
-                winning_players = {player.id}
+                winning_players = {player.player_id}
             elif score == lowest_score:
-                winning_players.add(player.id)
-            scores[player.id] = score
+                winning_players.add(player.player_id)
+            scores[player.player_id] = score
         
         if len(winning_players) == 1 and caller_id in winning_players:
             scores[caller_id] = 0
         else:
             for player in winning_players:
-                scores[player.id] = 0
+                scores[player.player_id] = 0
             scores[caller_id] = 30
         
         return scores

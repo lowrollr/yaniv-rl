@@ -18,6 +18,8 @@ class YanivRound:
         self.pickup_left = None 
         self.pickup_right = None
 
+        self.known_cards = [np.zeros(54) for _ in range(num_players)]
+
         self.num_players = num_players
         self.cur_player = 0
         self.is_over = False
@@ -42,8 +44,9 @@ class YanivRound:
         self.played_cards[self.cur_player] *= 0.9
 
         for i, card_index in enumerate(action.played_cards):
-            card = players[self.cur_player].hand.pop(card_index)
+            card = players[self.cur_player].hand[card_index]
             self.played_cards[self.cur_player][card.id] = 1
+            self.known_cards[self.cur_player][card.id] = 0
             if i != 0 and i != len(action.played_cards) - 1:
                 self.discard_pile.append(card)
             else:
@@ -51,27 +54,32 @@ class YanivRound:
                     next_left_pickup = card
                 else:
                     next_right_pickup = card
+        players[self.cur_player].remove_cards(action.played_cards)
         
         if action.pickup_choice == 0:
-            players[self.cur_player].hand.append(self.pickup_left)
-            self.discard_pile.append(self.pickup_right)
+            players[self.cur_player].add_card(self.pickup_left)
+            if self.pickup_right:
+                self.discard_pile.append(self.pickup_right)
+            self.known_cards[self.cur_player][self.pickup_left.id] = 1
         elif action.pickup_choice == 1:
-            players[self.cur_player].hand.append(self.pickup_right)
+            players[self.cur_player].add_card(self.pickup_right)
             self.discard_pile.append(self.pickup_left)
+            self.known_cards[self.cur_player][self.pickup_right.id] = 1
         else:
-            players[self.cur_player].hand.append(self.dealer.flip_top_card())
+            players[self.cur_player].add_card(self.dealer.flip_top_card())
             self.discard_pile.append(self.pickup_left)
-            self.discard_pile.append(self.pickup_right)
+            if self.pickup_right:
+                self.discard_pile.append(self.pickup_right)
         
         self.pickup_left = next_left_pickup
         self.pickup_right = next_right_pickup
 
-        if not self.dealer.deck():
+        if not self.dealer.deck:
             self.replace_deck()
 
     def get_legal_actions(self, players, player_id):
         legal_actions = []
-        if players[player_id].hand_value() <= 7:
+        if players[player_id].get_hand_score() <= 7:
             legal_actions.append(Action(call=True, played_cards=[], pickup_choice=None))
 
         play_actions = players[player_id].get_play_actions()
@@ -97,7 +105,7 @@ class YanivRound:
         for player in players:
             state['num_cards'].append(len(player.hand))
         state['my_id'] = player_id
-        state['known_in_hand'] = [cards_to_bin_array(self.known[i]) for i in self.num_players]
+        state['known_in_hand'] = self.known_cards
         state['played_cards'] = self.played_cards
         return state
 

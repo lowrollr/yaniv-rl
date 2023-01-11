@@ -10,7 +10,7 @@ class YanivDealer:
 
     def deal_cards(self, player, num):
         for _ in range(num):
-            player.hand.append(self.deck.pop())
+            player.add_card(self.deck.pop())
 
     def flip_top_card(self):
         return self.deck.pop()
