@@ -26,6 +26,11 @@ class Action:
             z = PERM_ID_MAP[''.join([str(c) for c in self.played_cards])]
             action_id = (y * 325) + z
             return action_id
+    
+    def __eq__(self, x):
+        if type(x) is int:
+            return self.__hash__() == x
+        return self.__hash__() == x.__hash__()
 
 
 def decode_action(action_id: int) -> Action:

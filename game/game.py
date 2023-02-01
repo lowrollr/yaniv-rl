@@ -9,16 +9,17 @@ from game.judger import YanivJudger
 class YanivGame:
     def __init__(self, num_players=4):
         self.np_random = np.random.RandomState()
-
         self.num_players = num_players
         self.judger = YanivJudger()
+        self.dealer = YanivDealer(self.np_random)
+        self.players = []
 
     def configure(self, game_config):
         self.num_players = game_config["game_num_players"]
 
     def init_game(self):
 
-        self.dealer = YanivDealer(self.np_random)
+        
 
         self.players = [YanivPlayer(i, self.np_random)
                         for i in range(self.num_players)]
@@ -62,7 +63,7 @@ class YanivGame:
         return self.round.is_over
 
     def get_num_actions(self):
-        return 2 * 3 * 325
+        return (3 * 325) + 1
 
     def get_player_id(self):
         return self.round.cur_player
