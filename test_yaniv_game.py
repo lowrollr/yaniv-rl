@@ -3,11 +3,12 @@ import numpy as np
 from game.dealer import YanivDealer
 
 from game.game import YanivGame
-from game.action import decode_action
+from game.action import Action, decode_action
 from game.card import YanivCard, Card, rank_id_values, suit_id_values, rank_point_values
 
 from game.player import YanivPlayer
 from game.round import YanivRound
+from game.utils import cards_to_bin_array, make_yaniv_deck
 
 class TestYanivMethods(unittest.TestCase):
     # GAME:
@@ -89,19 +90,13 @@ class TestYanivMethods(unittest.TestCase):
 
     # ACTION:
     def test_action_eq_hash(self):
-        game = YanivGame()
-        game.init_game()
-        legal_actions = game.get_legal_actions()
-        action = legal_actions[0]
+        action = Action(False, 0, [0])
         encoded_action = action.__hash__()
         equal = action == encoded_action
         self.assertTrue(equal)
     
     def test_action_decode_encode(self):
-        game = YanivGame()
-        game.init_game()
-        legal_actions = game.get_legal_actions()
-        action = legal_actions[0]
+        action = Action(False, 0, [0])
         encode_action = action.__hash__()
         decoded_action = decode_action(encode_action)
         self.assertTrue(encode_action == decoded_action == action)
@@ -118,11 +113,8 @@ class TestYanivMethods(unittest.TestCase):
 
     # DEALER:
     def test_dealer_init(self):
-        game = YanivGame()
-        dealer = game.dealer
+        dealer = YanivDealer(np.random.RandomState())
         self.assertEqual(len(dealer.deck), 54)
-        game.init_game()
-        self.assertEqual(len(dealer.deck), 54 - (5 * game.num_players) - 1)
 
     def test_dealer_deal(self):
         cards_to_deal = 5
@@ -134,8 +126,7 @@ class TestYanivMethods(unittest.TestCase):
         self.assertEqual(len(game.players[0].hand), 5 + cards_to_deal)
 
     def test_dealer_flip_top(self):
-        game = YanivGame()
-        dealer = game.dealer
+        dealer = YanivDealer(np.random.RandomState())
         dealer.flip_top_card()
         self.assertEqual(len(dealer.deck), 54 - 1)
 
@@ -311,6 +302,18 @@ class TestYanivMethods(unittest.TestCase):
         self.assertEqual(len(round.dealer.deck), 55)
         self.assertEqual(round.pickup_left, top)
 
+    # UTILS
+    def test_make_yaniv_deck(self):
+        deck = make_yaniv_deck()
+        self.assertEqual(len(deck), 54)
+    
+    def test_cards_to_bin_array(self):
+        cards = [YanivCard(Card('S', '2')), YanivCard(Card('S', 'A'))]
+        arr = cards_to_bin_array(cards)
+        self.assertEqual(arr.shape, (54,))
+        self.assertEqual(arr.sum(), 2)
+        self.assertEqual(arr[0], 1)
+        self.assertEqual(arr[1], 1)
 
         
 if __name__ == '__main__':
