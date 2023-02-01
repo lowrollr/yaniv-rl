@@ -7,20 +7,19 @@ from game.judger import YanivJudger
 
 
 class YanivGame:
-    def __init__(self, num_players=4):
-        self.np_random = np.random.RandomState()
+    def __init__(self, seed=0, num_players=4):
+        self.np_random = np.random.RandomState(seed)
         self.num_players = num_players
         self.judger = YanivJudger()
         self.dealer = YanivDealer(self.np_random)
         self.players = []
+        self.allow_step_back = False
 
     def configure(self, game_config):
         self.num_players = game_config["game_num_players"]
 
     def init_game(self):
-
-        
-
+        self.dealer.reset()
         self.players = [YanivPlayer(i, self.np_random)
                         for i in range(self.num_players)]
 

@@ -18,3 +18,7 @@ class YanivDealer:
 
     def shuffle(self):
         self.np_random.shuffle(self.deck)
+
+    def reset(self):
+        self.deck = make_yaniv_deck()
+        self.shuffle()

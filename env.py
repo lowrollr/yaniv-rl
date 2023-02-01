@@ -9,7 +9,9 @@ import numpy as np
 
 
 DEFAULT_GAME_CONFIG = {
-    'game_num_players': 4
+    'game_num_players': 4,
+    'allow_step_back': False,
+    'seed': 0
 }
 
 
@@ -17,11 +19,13 @@ class YanivEnv(Env):
     def __init__(self, config=None):
         self.name = 'yaniv'
         self.config = DEFAULT_GAME_CONFIG if config is None else config
-        num_players = config['game_num_players']
-        self.game = YanivGame(num_players=num_players)
-        super().__init__(config)
+        num_players = self.config.get('game_num_players', 4)
+        self.game = YanivGame(self.config.get('seed', 0), num_players=num_players)
+        self.allow_step_back = False
+        super().__init__(self.config)
         self.state_shape = [[3, num_players, 54]]
         self.action_shape = [[4, 325]]
+        
 
     def _extract_state(self, state):
         obs = np.zeros((3, self.game.num_players, 54))
@@ -54,5 +58,7 @@ class YanivEnv(Env):
     def get_payoffs(self):
         return -1 * np.array(self.game.get_payoffs())
 
-    def _get_legal_actions(self, legal_actions):
-        return super()._get_legal_actions()
+    def _get_legal_actions(self):
+        legal_actions = self.game.get_legal_actions()
+        legal_ids = {action.__hash__(): None for action in legal_actions}
+        return OrderedDict(legal_ids)
