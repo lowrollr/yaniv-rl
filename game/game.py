@@ -50,7 +50,12 @@ class YanivGame:
         return state
 
     def get_payoffs(self):
-        return self.judger.get_points(self.players, self.round.caller_id)
+        points = self.judger.get_points(self.players, self.round.caller_id)
+        payoffs = []
+        points_sum = sum(points)
+        for player_id in range(self.num_players):
+            payoffs.append(points_sum - (2 * points[player_id]))
+        return payoffs
 
     def get_legal_actions(self):
         return self.round.get_legal_actions(self.players, self.round.cur_player)

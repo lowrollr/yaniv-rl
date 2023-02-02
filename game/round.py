@@ -10,16 +10,16 @@ class YanivRound:
         self.dealer = dealer
         self.caller_id = 0
 
-        # represents cards that have been played but are unable for pickup
+        # represents cards that have been played by a player
         self.discard_pile = [] 
-        self.played_cards = [np.zeros(54) for _ in range(num_players)]
+        self.played_cards = np.zeros((num_players, 54))
 
         # cards that are available for pickup
         self.pickup_left = None 
         self.pickup_right = None
         self.next_to_discard = []
 
-        self.known_cards = [np.zeros(54) for _ in range(num_players)]
+        self.known_cards = np.zeros((num_players, 54))
 
         self.num_players = num_players
         self.cur_player = 0
@@ -105,6 +105,7 @@ class YanivRound:
         state['hand_value'] = player.get_hand_score()
         state['discard_pile'] = cards_to_bin_array(self.discard_pile)
         state['pickups'] = cards_to_bin_array([self.pickup_left, self.pickup_right])
+        state['next_to_discard'] = cards_to_bin_array(self.next_to_discard)
         state['legal_actions'] = self.get_legal_actions(players, player_id)
         state['num_cards'] = []
         for player in players:
