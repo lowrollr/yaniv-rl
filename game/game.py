@@ -62,7 +62,7 @@ class YanivGame:
         return self.round.is_over
 
     def get_num_actions(self):
-        return (3 * 325) + 1
+        return (3 * 85) + 1
 
     def get_player_id(self):
         return self.round.cur_player

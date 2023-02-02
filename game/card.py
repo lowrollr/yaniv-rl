@@ -37,7 +37,8 @@ rank_id_values = {
     'T': 9,
     'J': 10,
     'Q': 11,
-    'K': 12
+    'K': 12,
+    '': -1
 }
 
 
@@ -46,6 +47,7 @@ class YanivCard(Card):
         super().__init__(card.suit, card.rank)
         self.value = self._value()
         self.id = self._id()
+        self.rank_id_value = rank_id_values[self.rank]
         self.rank_value = rank_point_values[self.rank] if self.suit != 'BJ' and self.suit != 'RJ' else 0
 
     def _value(self):

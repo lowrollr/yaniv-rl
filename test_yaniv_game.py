@@ -20,7 +20,7 @@ class TestYanivMethods(unittest.TestCase):
     def test_get_num_actions(self):
         game = YanivGame()
         num_actions = game.get_num_actions()
-        self.assertEqual(num_actions, (325 * 3) + 1)
+        self.assertEqual(num_actions, (85 * 3) + 1)
 
     def test_init_game(self):
         game = YanivGame()

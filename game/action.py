@@ -3,12 +3,24 @@ from dataclasses import dataclass
 from typing import List
 import itertools
 
-PERM_ID_MAP = {''.join([str(c) for c in p]): i for i, p in enumerate(
-    itertools.chain.from_iterable(itertools.permutations(range(5), r) for r in range(1, 6)))}
-ID_PERM_MAP = {v: k for k, v in PERM_ID_MAP.items()}
+HAND_ACTION_IDS = dict()
+
+for i in range(1, 3):
+    for play in itertools.combinations(range(5), i):
+        if len(play) == 2:
+            for j in range(0, 4):
+                for combo in itertools.combinations(range(5), j):
+                    if set(play).isdisjoint(set(combo)):
+                        HAND_ACTION_IDS[''.join([str(c) for c in play + combo])] = len(HAND_ACTION_IDS)
+        else:
+            HAND_ACTION_IDS[''.join([str(c) for c in play])] = len(HAND_ACTION_IDS)
 
 
-CALL_ACTION_ID = 3 * 325
+
+ID_HAND_ACTION_MAP = {v: k for k, v in HAND_ACTION_IDS.items()}
+
+
+CALL_ACTION_ID = 3 * len(HAND_ACTION_IDS)
 
 
 @dataclass
@@ -23,8 +35,8 @@ class Action:
             return CALL_ACTION_ID
         else:
             y = self.pickup_choice
-            z = PERM_ID_MAP[''.join([str(c) for c in self.played_cards])]
-            action_id = (y * 325) + z
+            z = HAND_ACTION_IDS[''.join([str(c) for c in self.played_cards])]
+            action_id = (y * len(HAND_ACTION_IDS)) + z
             return action_id
     
     def __eq__(self, x):
@@ -34,11 +46,10 @@ class Action:
 
 
 def decode_action(action_id: int) -> Action:
-    played_cards_id = action_id % 325
-    action_id = action_id // 325
+    if action_id == CALL_ACTION_ID:
+        return Action(call=True, pickup_choice=None, played_cards=None)
+    played_cards_id = action_id % len(HAND_ACTION_IDS)
+    action_id = action_id // len(HAND_ACTION_IDS)
     pickup_id = action_id % 3
     action_id = action_id // 3
-    call_id = action_id
-    if call_id:
-        return Action(call=True, pickup_choice=None, played_cards=None)
-    return Action(call=bool(call_id), pickup_choice=pickup_id, played_cards=[int(c) for c in ID_PERM_MAP[played_cards_id]])
+    return Action(call=False, pickup_choice=pickup_id, played_cards=[int(c) for c in ID_HAND_ACTION_MAP[played_cards_id]])

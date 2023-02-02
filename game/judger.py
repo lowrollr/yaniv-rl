@@ -20,6 +20,6 @@ class YanivJudger:
         else:
             for p in winning_players:
                 scores[p] = 0
-            scores[caller_id] = 30
+            scores[caller_id] += 30
 
         return scores

@@ -24,7 +24,7 @@ class YanivEnv(Env):
         self.allow_step_back = False
         super().__init__(self.config)
         self.state_shape = [[3, num_players, 54]]
-        self.action_shape = [[4, 325]]
+        self.action_shape = [[4, 85]]
         
 
     def _extract_state(self, state):
