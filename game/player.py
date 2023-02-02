@@ -85,7 +85,7 @@ class YanivPlayer:
         valid_straights = []
 
         def append_valid_straight(straight):
-            actions.append([straight[0]] + [straight[-1]] + straight[1:-1])
+            actions.append([straight[0]] + [straight[-1]] + sorted(straight[1:-1], key=lambda x: (self.hand[x].rank_id_value, x)))
 
         def find_straights(start, end, cur, jokers, tot_jokers):
             if end >= len(self.hand):

@@ -17,6 +17,7 @@ class YanivRound:
         # cards that are available for pickup
         self.pickup_left = None 
         self.pickup_right = None
+        self.next_to_discard = []
 
         self.known_cards = [np.zeros(54) for _ in range(num_players)]
 
@@ -40,6 +41,8 @@ class YanivRound:
         next_left_pickup = None
         next_right_pickup = None
 
+        self.discard_pile.extend(self.next_to_discard)
+        self.next_to_discard = []
         # encode recency
         self.played_cards[self.cur_player] *= 0.9
 
@@ -47,13 +50,13 @@ class YanivRound:
             card = players[self.cur_player].hand[card_index]
             self.played_cards[self.cur_player][card.id] = 1
             self.known_cards[self.cur_player][card.id] = 0
-            if i != 0 and i != len(action.played_cards) - 1:
-                self.discard_pile.append(card)
+            if i == 0:
+                next_left_pickup = card
+            elif i == 1:
+                next_right_pickup = card
             else:
-                if i == 0:
-                    next_left_pickup = card
-                else:
-                    next_right_pickup = card
+                self.next_to_discard.append(card)
+                    
         players[self.cur_player].remove_cards(action.played_cards)
         
         if action.pickup_choice == 0:
