@@ -61,7 +61,7 @@ class YanivEnv(Env):
         return decode_action(action_id)
 
     def get_payoffs(self):
-        return np.array(self.game.get_payoffs())
+        return -1 * np.array(self.game.get_payoffs())
 
     def _get_legal_actions(self):
         legal_actions = self.game.get_legal_actions()

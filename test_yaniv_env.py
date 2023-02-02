@@ -7,7 +7,7 @@ class TestYanivEnv(unittest.TestCase):
     def test_reset_and_extract_state(self):
         env = YanivEnv()
         state, _ = env.reset()
-        self.assertEqual(state['obs'].shape, (3, 4, 54))
+        self.assertEqual(state['obs'].shape, (3, max(5, env.game.num_players), 54))
 
     def test_get_legal_actions(self):
         env = YanivEnv()
