@@ -4,7 +4,7 @@ from collections import OrderedDict
 from rlcard.envs import Env
 from game.game import YanivGame
 from game.action import decode_action
-
+from game.utils import cards_to_bin_array
 import numpy as np
 
 
@@ -30,20 +30,20 @@ class YanivEnv(Env):
     def _extract_state(self, state):
         obs = np.zeros((3, max(5, self.game.num_players), 54))
 
-        obs[0,0] = state['hand']
-        obs[0,1] = state['pickups']
-        obs[0,2] = state['discard_pile']
-        obs[0,3] = state['next_to_discard']
+        obs[0,0] = cards_to_bin_array(state['hand'])
+        obs[0,1] = cards_to_bin_array(state['pickups'])
+        obs[0,2] = cards_to_bin_array(state['discard_pile'])
+        obs[0,3] = cards_to_bin_array(state['next_to_discard'])
 
-
+        offset = state['my_id']
         for i, num_cards in enumerate(state['num_cards']):
             # player's id should go first
-            offset = state['my_id']
+            
             index = (i - offset) % self.game.num_players
             obs[0,4,index] = num_cards / 5
 
-        obs[1,:self.game.num_players] = state['known_in_hand']
-        obs[2,:self.game.num_players] = state['played_cards']
+        obs[1,:self.game.num_players] = np.roll(state['known_in_hand'], shift=-offset, axis=0)
+        obs[2,:self.game.num_players] = np.roll(state['played_cards'], shift=-offset, axis=0)
 
         legal_ids = {}
         for action in state['legal_actions']:

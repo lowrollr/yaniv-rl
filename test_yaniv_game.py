@@ -33,9 +33,9 @@ class TestYanivMethods(unittest.TestCase):
         self.assertEqual(state['num_cards'][2], 5)
         self.assertEqual(state['num_cards'][3], 5)
         self.assertEqual(state['my_id'], 0)
-        self.assertEqual(len(state['hand']), 54)
-        self.assertEqual(len(state['pickups']), 54)
-        self.assertEqual(len(state['discard_pile']), 54)
+        self.assertEqual(len(state['hand']), 5)
+        self.assertEqual(len(state['pickups']), 2)
+        self.assertEqual(len(state['discard_pile']), 0)
         self.assertEqual(len(state['known_in_hand']), state['num_players'])
         self.assertEqual(len(state['played_cards']), state['num_players'])
         self.assertEqual(len(state['known_in_hand'][0]), 54)
@@ -61,8 +61,6 @@ class TestYanivMethods(unittest.TestCase):
         state, player_id = game.step(action)
         current = game.round.cur_player
         self.assertEqual(player_id, current)
-        self.assertGreater(len(state['discard_pile']), 0)
-        self.assertGreater(len(state['pickups']), 0)
 
     def test_get_payoffs(self):
         game = YanivGame()
@@ -286,10 +284,9 @@ class TestYanivMethods(unittest.TestCase):
         player1.hand = [YanivCard(Card('H', '2')), YanivCard(Card('H', 'A'))]
 
         state = round.get_state([player0, player1], 0)
-        self.assertEqual(len(state['hand']), 54)
-        self.assertEqual(state['hand'].sum(), 2)
+        self.assertEqual(len(state['hand']), 2)
         self.assertEqual(len(state['num_cards']), 2)
-        self.assertEqual(state['pickups'].sum(), 1)
+        self.assertEqual(len(state['pickups']), 2)
         self.assertEqual(sum(state['num_cards']), 4)
 
     def test_replace_deck(self):

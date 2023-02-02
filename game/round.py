@@ -1,7 +1,7 @@
 
 from game.card import YanivCard
 from game.action import Action
-from game.utils import cards_to_bin_array
+
 import numpy as np
 
 class YanivRound:
@@ -101,11 +101,11 @@ class YanivRound:
         state = {}
 
         player = players[player_id]
-        state['hand'] = cards_to_bin_array(player.get_hand_state())
+        state['hand'] = player.get_hand_state()
         state['hand_value'] = player.get_hand_score()
-        state['discard_pile'] = cards_to_bin_array(self.discard_pile)
-        state['pickups'] = cards_to_bin_array([self.pickup_left, self.pickup_right])
-        state['next_to_discard'] = cards_to_bin_array(self.next_to_discard)
+        state['discard_pile'] = self.discard_pile
+        state['pickups'] = [self.pickup_left, self.pickup_right]
+        state['next_to_discard'] = self.next_to_discard
         state['legal_actions'] = self.get_legal_actions(players, player_id)
         state['num_cards'] = []
         for player in players:
