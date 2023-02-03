@@ -43,6 +43,9 @@ class Action:
         if type(x) is int:
             return self.__hash__() == x
         return self.__hash__() == x.__hash__()
+    
+    def __gt__(self, x):
+        return self.__hash__() > x.__hash__()
 
 
 def decode_action(action_id: int) -> Action:

@@ -1,5 +1,7 @@
 
 class YanivJudger:
+
+
     @staticmethod
     def get_points(players, caller_id):
         scores = [0 for _ in range(len(players))]
@@ -20,6 +22,6 @@ class YanivJudger:
         else:
             for p in winning_players:
                 scores[p] = 0
-            scores[caller_id] += 30
+            scores[caller_id] = 30
 
         return scores

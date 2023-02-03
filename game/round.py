@@ -22,9 +22,10 @@ class YanivRound:
         self.known_cards = np.zeros((num_players, 54))
 
         self.num_players = num_players
-        self.cur_player = 0
+        self.cur_player = np.random.randint(num_players)
         self.is_over = False
 
+        self.turns = 0
         
     
     def flip_top_card(self):
@@ -82,6 +83,12 @@ class YanivRound:
         
         self.cur_player = (self.cur_player + 1) % self.num_players
 
+        self.turns += 1
+        if self.turns > 1000:
+            self.is_over = True
+            self.caller_id = self.cur_player
+
+        
     def get_legal_actions(self, players, player_id):
         legal_actions = []
         if players[player_id].get_hand_score() <= 7:

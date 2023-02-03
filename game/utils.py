@@ -15,3 +15,6 @@ def cards_to_bin_array(cards: List[YanivCard]):
         if card is not None:
             array[card.id] = 1
     return array
+
+def score_hand(hand: List[YanivCard]) -> int:
+    return sum([card.rank_value for card in hand])

@@ -53,7 +53,7 @@ class YanivEnv(Env):
             'obs': obs,
             'legal_actions': OrderedDict(legal_ids),
             'raw_obs': state,
-            'raw_legal_actions': [a for a in state['legal_actions']]
+            'raw_legal_actions': state['legal_actions']
         }
         return extracted_state
 
