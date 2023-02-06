@@ -24,7 +24,7 @@ class YanivEnv(Env):
         self.allow_step_back = False
         super().__init__(self.config)
         self.state_shape = [[3, max(5, self.game.num_players), 54]]
-        self.action_shape = [[4, 85]]
+        self.action_shape = [[2,3,85]]
         
 
     def _extract_state(self, state):
@@ -61,8 +61,9 @@ class YanivEnv(Env):
         return decode_action(action_id)
 
     def get_payoffs(self):
-        return -1 * np.array(self.game.get_payoffs())
-
+        payoffs = self.game.get_payoffs()
+        payoff_sum = sum(payoffs)
+        return [((payoff_sum - payoff)/(len(payoffs)-1)) - payoff for payoff in payoffs]
     def _get_legal_actions(self):
         legal_actions = self.game.get_legal_actions()
         legal_ids = {action.__hash__(): None for action in legal_actions}

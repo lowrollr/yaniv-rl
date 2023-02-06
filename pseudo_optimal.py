@@ -35,18 +35,22 @@ class PseudoOptimalAgent:
                     if op_known_hand_value <= hand_value:
                         call = False
                         break
-            
             if call:
                 return CALL_ACTION_ID
+            
         
         # choose which cards to play
         
 
         hand = state['hand']
+        known_in_hand = state['known_in_hand']
+        known_in_hand[state['my_id']] = 0
         possible_cards_in_deck = np.ones(54) - (np.sum(state['known_in_hand'], axis=0) + cards_to_bin_array(state['discard_pile']) + cards_to_bin_array(state['next_to_discard']) + cards_to_bin_array(hand) + cards_to_bin_array(state['pickups']))
         ev_top = np.sum(PTS * possible_cards_in_deck) / np.sum(possible_cards_in_deck)
         scores = []
         for action in legal_actions:
+            if action.call == True:
+                continue
             valid_indices = np.ones(len(hand), dtype=bool)
             for hi in action.played_cards:
                 valid_indices[hi] = False

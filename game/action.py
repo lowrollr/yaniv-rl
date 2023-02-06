@@ -19,7 +19,6 @@ for i in range(1, 3):
 
 ID_HAND_ACTION_MAP = {v: k for k, v in HAND_ACTION_IDS.items()}
 
-
 CALL_ACTION_ID = 3 * len(HAND_ACTION_IDS)
 
 
@@ -31,13 +30,11 @@ class Action:
     played_cards: List[int]
 
     def __hash__(self) -> int:
-        if self.call:
-            return CALL_ACTION_ID
-        else:
-            y = self.pickup_choice
-            z = HAND_ACTION_IDS[''.join([str(c) for c in self.played_cards])]
-            action_id = (y * len(HAND_ACTION_IDS)) + z
-            return action_id
+        x = int(self.call)
+        y = self.pickup_choice
+        z = HAND_ACTION_IDS[''.join([str(c) for c in self.played_cards])]
+        action_id = (x * 3 * len(HAND_ACTION_IDS)) + (y * len(HAND_ACTION_IDS)) + z
+        return action_id
     
     def __eq__(self, x):
         if type(x) is int:
@@ -49,10 +46,9 @@ class Action:
 
 
 def decode_action(action_id: int) -> Action:
-    if action_id == CALL_ACTION_ID:
-        return Action(call=True, pickup_choice=None, played_cards=None)
     played_cards_id = action_id % len(HAND_ACTION_IDS)
     action_id = action_id // len(HAND_ACTION_IDS)
     pickup_id = action_id % 3
     action_id = action_id // 3
-    return Action(call=False, pickup_choice=pickup_id, played_cards=[int(c) for c in ID_HAND_ACTION_MAP[played_cards_id]])
+    call_id = action_id % 2
+    return Action(call=bool(call_id), pickup_choice=pickup_id, played_cards=[int(c) for c in ID_HAND_ACTION_MAP[played_cards_id]])

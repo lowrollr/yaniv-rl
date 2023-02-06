@@ -1,4 +1,5 @@
 
+from copy import copy
 from game.card import YanivCard
 from game.action import Action
 
@@ -91,16 +92,19 @@ class YanivRound:
         
     def get_legal_actions(self, players, player_id):
         legal_actions = []
-        if players[player_id].get_hand_score() <= 7:
-            legal_actions.append(Action(call=True, played_cards=[], pickup_choice=None))
+        
 
         play_actions = players[player_id].get_play_actions()
-
+        
+            
         for played_cards in play_actions:
             legal_actions.append(Action(call=False, played_cards=played_cards, pickup_choice=0))
             if self.pickup_right is not None:
                 legal_actions.append(Action(call=False, played_cards=played_cards, pickup_choice=1))
             legal_actions.append(Action(call=False, played_cards=played_cards, pickup_choice=2))
+        if players[player_id].get_hand_score() <= 7:
+            for action in list(legal_actions):
+                legal_actions.append(Action(call=True, played_cards=action.played_cards, pickup_choice=action.pickup_choice))
 
         return legal_actions
 

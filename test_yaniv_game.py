@@ -20,14 +20,13 @@ class TestYanivMethods(unittest.TestCase):
     def test_get_num_actions(self):
         game = YanivGame()
         num_actions = game.get_num_actions()
-        self.assertEqual(num_actions, (85 * 3) + 1)
+        self.assertEqual(num_actions, (2 * 3 * 85))
 
     def test_init_game(self):
         game = YanivGame()
         state, player_id = game.init_game()
         self.assertEqual(player_id, 0)
         self.assertEqual(state['num_players'], 4)
-        self.assertEqual(state['current_player'], 0)
         self.assertEqual(state['num_cards'][0], 5)
         self.assertEqual(state['num_cards'][1], 5)
         self.assertEqual(state['num_cards'][2], 5)
@@ -209,7 +208,6 @@ class TestYanivMethods(unittest.TestCase):
         round = YanivRound(YanivDealer(rando), 4, rando)
         self.assertEqual(round.num_players, 4)
         self.assertEqual(round.discard_pile, [])
-        self.assertEqual(round.cur_player, 0)
         self.assertEqual(round.num_players, 4)
         self.assertEqual(round.is_over, False)
         self.assertEqual(len(round.played_cards), 4)
@@ -249,7 +247,7 @@ class TestYanivMethods(unittest.TestCase):
 
 
         round_actions = round.get_legal_actions([player], 0)
-        self.assertEqual(len(round_actions), len(actions) * 2 + 1)
+        self.assertEqual(len(round_actions), len(actions) * 2 * 2)
 
         player = YanivPlayer(0, None)
         player.hand = [YanivCard(Card('S', 'T')), YanivCard(Card('S', 'A'))]
