@@ -14,6 +14,11 @@ DEFAULT_GAME_CONFIG = {
     'seed': 0
 }
 
+def get_game_payoffs(game):
+    payoffs = game.get_payoffs()
+    payoff_sum = sum(payoffs)
+    return [((payoff_sum - payoff)/(len(payoffs)-1)) - payoff for payoff in payoffs]
+
 
 class YanivEnv(Env):
     def __init__(self, config=None):
@@ -25,7 +30,12 @@ class YanivEnv(Env):
         super().__init__(self.config)
         self.state_shape = [[3, max(5, self.game.num_players), 54]]
         self.action_shape = [[2,3,85]]
+        self.num_agents = num_players
         
+        self.payoff_fn = get_game_payoffs
+        
+    def set_payoff_fn(self, payoff_fn):
+        self.payoff_fn = payoff_fn
 
     def _extract_state(self, state):
         obs = np.zeros((3, max(5, self.game.num_players), 54))
@@ -61,9 +71,8 @@ class YanivEnv(Env):
         return decode_action(action_id)
 
     def get_payoffs(self):
-        payoffs = self.game.get_payoffs()
-        payoff_sum = sum(payoffs)
-        return [((payoff_sum - payoff)/(len(payoffs)-1)) - payoff for payoff in payoffs]
+        return self.payoff_fn(self.game)
+    
     def _get_legal_actions(self):
         legal_actions = self.game.get_legal_actions()
         legal_ids = {action.__hash__(): None for action in legal_actions}
